@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{093D3FB3-1B8B-46AA-86C2-FB02231E2703}</ProjectGuid>
+    <ProjectGuid>{5657DE21-0542-4AA4-A956-160875F8DB74}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Life</RootNamespace>
@@ -43,6 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Initialization\GenerateRandom.cs" />
+    <Compile Include="Interfaces\IGame.cs" />
+    <Compile Include="Interfaces\IGamer.cs" />
+    <Compile Include="Interfaces\IScheduler.cs" />
+    <Compile Include="Interfaces\ISchedulerListener.cs" />
+    <Compile Include="Models\ActionEventArg.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\Gamer.cs" />
+    <Compile Include="Models\Scheduler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

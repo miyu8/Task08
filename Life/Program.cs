@@ -1,15 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Life.Models;
+using System;
+using System.Threading;
 
-namespace Life
+namespace BackgroundThreadTest
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            Thread[] threads = new Thread[2];
+            threads[0] = new Thread(() =>
+            {
+                Gamer gamer = new Gamer("First", 10, 10);
+                gamer.Run();
+            });
+            threads[1] = new Thread(() =>
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                {
+                    threads[0].Abort();
+                }
+            });
+            threads[0].Start();
+            threads[1].Start();
+            Console.ReadKey();
         }
     }
 }
