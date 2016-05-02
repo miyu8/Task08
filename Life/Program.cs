@@ -1,28 +1,16 @@
-﻿using Life.Models;
-using System;
+﻿using System;
+using Life.Initialization;
 using System.Threading;
 
-namespace BackgroundThreadTest
+namespace User
 {
-    class Program
+    public class Program
     {
-        static void Main()
+        public static Thread thread;
+        public static void Main()
         {
-            Thread[] threads = new Thread[2];
-            threads[0] = new Thread(() =>
-            {
-                Gamer gamer = new Gamer("First", 10, 10);
-                gamer.Run();
-            });
-            threads[1] = new Thread(() =>
-            {
-                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
-                {
-                    threads[0].Abort();
-                }
-            });
-            threads[0].Start();
-            threads[1].Start();
+            thread = Thread.CurrentThread;
+            Move move = new Move();
             Console.ReadKey();
         }
     }
