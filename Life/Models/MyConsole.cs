@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Life.Models
 {
@@ -17,7 +16,7 @@ namespace Life.Models
         {
             try
             {
-                Console.SetCursorPosition(x + 2 * ix, y + 2 * iy + 2 * indent);
+                Console.SetCursorPosition(y + 2 * iy, x + 2 * ix + 2 * indent);
                 Console.Write(s);
             }
             catch (ArgumentOutOfRangeException e)
@@ -30,23 +29,20 @@ namespace Life.Models
         protected void Square(int ix, int iy, int indent)
         {
             WriteAt("+", 0, 0, ix, iy, indent);
-            WriteAt("|", 0, 1, ix, iy, indent);
-            WriteAt("+", 0, 2, ix, iy, indent);
-
-            WriteAt("-", 1, 2, ix, iy, indent);
-            WriteAt("+", 2, 2, ix, iy, indent);
-
-            WriteAt("|", 2, 1, ix, iy, indent);
+            WriteAt("|", 1, 0, ix, iy, indent);
             WriteAt("+", 2, 0, ix, iy, indent);
 
-            WriteAt("-", 1, 0, ix, iy, indent);
+            WriteAt("-", 2, 1, ix, iy, indent);
+            WriteAt("+", 2, 2, ix, iy, indent);
+
+            WriteAt("|", 1, 2, ix, iy, indent);
+            WriteAt("+", 0, 2, ix, iy, indent);
+
+            WriteAt("-", 0, 1, ix, iy, indent);
         }
-        protected void Cross(int ix, int iy, int indent)
+        public void DrawConsole(Cell[,] gameField, int indent)
         {
-            WriteAt("X", 1, 1, ix, iy, indent);
-        }
-        public void DrawConsole(List<Cell> cells, int indent)
-        {
+            Console.Clear();
             for (int i = 0; i < shiftx; i++)
             {
                 for (int j = 0; j < shifty; j++)
@@ -54,9 +50,26 @@ namespace Life.Models
                     Square(i, j, indent);
                 }
             }
-            foreach (var item in cells)
+            for (int i = 0; i < gameField.Length / gameField.GetLength(0); i++)
             {
-                Cross(item.CoordX, item.CoordY, indent);
+                for (int j = 0; j < gameField.GetLength(0); j++)
+                {
+                    if (gameField[i, j] != null)
+                        switch (gameField[i, j].livingName)
+                        {
+                            case Cell.LivingName.Grass:
+                            case Cell.LivingName.Grass1:
+                            case Cell.LivingName.Grass2:
+                                WriteAt("X", 1, 1, gameField[i, j].CoordX, gameField[i, j].CoordY, indent);
+                                break;
+                            case Cell.LivingName.Herbivorous1:
+                                WriteAt("O", 1, 1, gameField[i, j].CoordX, gameField[i, j].CoordY, indent);
+                                break;
+                            case Cell.LivingName.Corpse:
+                                WriteAt("V", 1, 1, gameField[i, j].CoordX, gameField[i, j].CoordY, indent);
+                                break;
+                        }
+                }
             }
         }
     }

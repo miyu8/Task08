@@ -25,9 +25,8 @@ namespace Life
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<Player> PlayerSet { get; set; }
         public DbSet<Coords> CoordsSet { get; set; }
-        public DbSet<Play> PlaySet { get; set; }
+        public DbSet<Game> GameSet { get; set; }
         public DbSet<MSreplication_options> MSreplication_options { get; set; }
         public DbSet<spt_fallback_db> spt_fallback_db { get; set; }
         public DbSet<spt_fallback_dev> spt_fallback_dev { get; set; }

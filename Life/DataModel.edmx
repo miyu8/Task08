@@ -6,30 +6,18 @@
     <edmx:StorageModels>
     <Schema Namespace="DataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="DataModelStoreContainer">
-    <EntitySet Name="PlayerSet" EntityType="DataModel.Store.PlayerSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="CoordsSet" EntityType="DataModel.Store.CoordsSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="PlaySet" EntityType="DataModel.Store.PlaySet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="GameSet" EntityType="DataModel.Store.GameSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="MSreplication_options" EntityType="DataModel.Store.MSreplication_options" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="spt_fallback_db" EntityType="DataModel.Store.spt_fallback_db" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="spt_fallback_dev" EntityType="DataModel.Store.spt_fallback_dev" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="spt_fallback_usg" EntityType="DataModel.Store.spt_fallback_usg" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="spt_monitor" EntityType="DataModel.Store.spt_monitor" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="PlayerPlay" Association="DataModel.Store.PlayerPlay">
-      <End Role="Player" EntitySet="PlayerSet" />
-      <End Role="Play" EntitySet="PlaySet" />
-    </AssociationSet>
-    <AssociationSet Name="PlayCoords" Association="DataModel.Store.PlayCoords">
-      <End Role="Play" EntitySet="PlaySet" />
+    <AssociationSet Name="GameCoords" Association="DataModel.Store.GameCoords">
+      <End Role="Game" EntitySet="GameSet" />
       <End Role="Coords" EntitySet="CoordsSet" />
     </AssociationSet>
   </EntityContainer>
-  <EntityType Name="PlayerSet">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
-  </EntityType>
   <EntityType Name="CoordsSet">
     <Key>
       <PropertyRef Name="Id" />
@@ -37,16 +25,18 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CoordX" Type="int" Nullable="false" />
     <Property Name="CoordY" Type="int" Nullable="false" />
-    <Property Name="PlayId" Type="int" Nullable="false" />
-    <Property Name="Generation" Type="int" Nullable="false" />
+    <Property Name="TypeLiving" Type="int" Nullable="false" />
+    <Property Name="Game_Id" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="PlaySet">
+  <EntityType Name="GameSet">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Toy" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="PlayerId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="int" Nullable="false" />
+    <Property Name="SizeX" Type="int" Nullable="false" />
+    <Property Name="SizeY" Type="int" Nullable="false" />
+    <Property Name="Iteration" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="MSreplication_options">
     <Key>
@@ -152,27 +142,15 @@
     <Property Name="total_write" Type="int" Nullable="false" />
     <Property Name="total_errors" Type="int" Nullable="false" />
   </EntityType>
-  <Association Name="PlayerPlay">
-    <End Role="Player" Type="DataModel.Store.PlayerSet" Multiplicity="1" />
-    <End Role="Play" Type="DataModel.Store.PlaySet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Player">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Play">
-        <PropertyRef Name="PlayerId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="PlayCoords">
-    <End Role="Play" Type="DataModel.Store.PlaySet" Multiplicity="1" />
+  <Association Name="GameCoords">
+    <End Role="Game" Type="DataModel.Store.GameSet" Multiplicity="1" />
     <End Role="Coords" Type="DataModel.Store.CoordsSet" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Play">
+      <Principal Role="Game">
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="Coords">
-        <PropertyRef Name="PlayId" />
+        <PropertyRef Name="Game_Id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -181,30 +159,18 @@
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="DataModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
         <EntityContainer Name="DataModelContainer" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="PlayerSet" EntityType="DataModel.Player" />
           <EntitySet Name="CoordsSet" EntityType="DataModel.Coords" />
-          <EntitySet Name="PlaySet" EntityType="DataModel.Play" />
-          <AssociationSet Name="PlayerPlay" Association="DataModel.PlayerPlay">
-            <End Role="Player" EntitySet="PlayerSet" />
-            <End Role="Play" EntitySet="PlaySet" />
-          </AssociationSet>
-          <AssociationSet Name="PlayCoords" Association="DataModel.PlayCoords">
-            <End Role="Play" EntitySet="PlaySet" />
-            <End Role="Coords" EntitySet="CoordsSet" />
-          </AssociationSet>
+          <EntitySet Name="GameSet" EntityType="DataModel.Game" />
           <EntitySet Name="MSreplication_options" EntityType="DataModel.MSreplication_options" />
           <EntitySet Name="spt_fallback_db" EntityType="DataModel.spt_fallback_db" />
           <EntitySet Name="spt_fallback_dev" EntityType="DataModel.spt_fallback_dev" />
           <EntitySet Name="spt_fallback_usg" EntityType="DataModel.spt_fallback_usg" />
           <EntitySet Name="spt_monitor" EntityType="DataModel.spt_monitor" />
+          <AssociationSet Name="GameCoords" Association="DataModel.GameCoords">
+            <End Role="Game" EntitySet="GameSet" />
+            <End Role="Coords" EntitySet="CoordsSet" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Player">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-        </EntityType>
         <EntityType Name="Coords">
           <Key>
             <PropertyRef Name="Id" />
@@ -212,43 +178,19 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CoordX" Type="Int32" Nullable="false" />
           <Property Name="CoordY" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Play" Relationship="DataModel.PlayCoords" FromRole="Coords" ToRole="Play" />
-          <Property Name="PlayId" Type="Int32" Nullable="false" />
-          <Property Name="Generation" Type="Int32" Nullable="false" />
+          <Property Name="TypeLiving" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Game" Relationship="DataModel.GameCoords" FromRole="Coords" ToRole="Game" />
         </EntityType>
-        <EntityType Name="Play">
+        <EntityType Name="Game">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Toy" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Player" Relationship="DataModel.PlayerPlay" FromRole="Play" ToRole="Player" />
-          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="SizeX" Type="Int32" Nullable="false" />
+          <Property Name="SizeY" Type="Int32" Nullable="false" />
+          <Property Name="Iteration" Type="Int32" Nullable="false" />
         </EntityType>
-        <Association Name="PlayerPlay">
-          <End Type="DataModel.Player" Role="Player" Multiplicity="1" />
-          <End Type="DataModel.Play" Role="Play" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Player">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Play">
-              <PropertyRef Name="PlayerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="PlayCoords">
-          <End Type="DataModel.Play" Role="Play" Multiplicity="1" />
-          <End Type="DataModel.Coords" Role="Coords" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Play">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Coords">
-              <PropertyRef Name="PlayId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="MSreplication_options">
           <Key>
             <PropertyRef Name="optname" />
@@ -353,37 +295,34 @@
           <Property Name="total_write" Type="Int32" Nullable="false" />
           <Property Name="total_errors" Type="Int32" Nullable="false" />
         </EntityType>
+        <Association Name="GameCoords">
+          <End Type="DataModel.Game" Role="Game" Multiplicity="1" />
+          <End Type="DataModel.Coords" Role="Coords" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataModelContainer">
-    <EntitySetMapping Name="PlayerSet">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Player)">
-        <MappingFragment StoreEntitySet="PlayerSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="CoordsSet">
       <EntityTypeMapping TypeName="IsTypeOf(DataModel.Coords)">
         <MappingFragment StoreEntitySet="CoordsSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="CoordX" ColumnName="CoordX" />
           <ScalarProperty Name="CoordY" ColumnName="CoordY" />
-          <ScalarProperty Name="PlayId" ColumnName="PlayId" />
-          <ScalarProperty Name="Generation" ColumnName="Generation" />
+          <ScalarProperty Name="TypeLiving" ColumnName="TypeLiving" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="PlaySet">
-      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Play)">
-        <MappingFragment StoreEntitySet="PlaySet">
+    <EntitySetMapping Name="GameSet">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Game)">
+        <MappingFragment StoreEntitySet="GameSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Toy" ColumnName="Toy" />
-          <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="SizeX" ColumnName="SizeX" />
+          <ScalarProperty Name="SizeY" ColumnName="SizeY" />
+          <ScalarProperty Name="Iteration" ColumnName="Iteration" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -461,6 +400,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <AssociationSetMapping Name="GameCoords" TypeName="DataModel.GameCoords" StoreEntitySet="CoordsSet">
+      <EndProperty Name="Game">
+        <ScalarProperty Name="Id" ColumnName="Game_Id" />
+      </EndProperty>
+      <EndProperty Name="Coords">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

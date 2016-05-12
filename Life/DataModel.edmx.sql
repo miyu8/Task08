@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/02/2016 12:51:30
+-- Date Created: 05/13/2016 01:56:28
 -- Generated from EDMX file: E:\Разработка на платформе .NET\C#\Life\Life\DataModel.edmx
 -- --------------------------------------------------
 
@@ -17,25 +17,19 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_PlayerPlay]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[PlaySet] DROP CONSTRAINT [FK_PlayerPlay];
-GO
-IF OBJECT_ID(N'[dbo].[FK_PlayCoords]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[CoordsSet] DROP CONSTRAINT [FK_PlayCoords];
+IF OBJECT_ID(N'[dbo].[FK_GameCoords]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[CoordsSet] DROP CONSTRAINT [FK_GameCoords];
 GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[PlayerSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[PlayerSet];
-GO
 IF OBJECT_ID(N'[dbo].[CoordsSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[CoordsSet];
 GO
-IF OBJECT_ID(N'[dbo].[PlaySet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[PlaySet];
+IF OBJECT_ID(N'[dbo].[GameSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[GameSet];
 GO
 IF OBJECT_ID(N'[dbo].[MSreplication_options]', 'U') IS NOT NULL
     DROP TABLE [dbo].[MSreplication_options];
@@ -57,28 +51,23 @@ GO
 -- Creating all tables
 -- --------------------------------------------------
 
--- Creating table 'PlayerSet'
-CREATE TABLE [dbo].[PlayerSet] (
-    [Id] int IDENTITY(1,1) NOT NULL,
-    [Name] nvarchar(max)  NOT NULL
-);
-GO
-
 -- Creating table 'CoordsSet'
 CREATE TABLE [dbo].[CoordsSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [CoordX] int  NOT NULL,
     [CoordY] int  NOT NULL,
-    [PlayId] int  NOT NULL,
-    [Generation] int  NOT NULL
+    [TypeLiving] int  NOT NULL,
+    [Game_Id] int  NOT NULL
 );
 GO
 
--- Creating table 'PlaySet'
-CREATE TABLE [dbo].[PlaySet] (
+-- Creating table 'GameSet'
+CREATE TABLE [dbo].[GameSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
-    [Toy] nvarchar(max)  NOT NULL,
-    [PlayerId] int  NOT NULL
+    [Type] int  NOT NULL,
+    [SizeX] int  NOT NULL,
+    [SizeY] int  NOT NULL,
+    [Iteration] int  NOT NULL
 );
 GO
 
@@ -155,21 +144,15 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
--- Creating primary key on [Id] in table 'PlayerSet'
-ALTER TABLE [dbo].[PlayerSet]
-ADD CONSTRAINT [PK_PlayerSet]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
 -- Creating primary key on [Id] in table 'CoordsSet'
 ALTER TABLE [dbo].[CoordsSet]
 ADD CONSTRAINT [PK_CoordsSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'PlaySet'
-ALTER TABLE [dbo].[PlaySet]
-ADD CONSTRAINT [PK_PlaySet]
+-- Creating primary key on [Id] in table 'GameSet'
+ALTER TABLE [dbo].[GameSet]
+ADD CONSTRAINT [PK_GameSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -207,34 +190,19 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [PlayerId] in table 'PlaySet'
-ALTER TABLE [dbo].[PlaySet]
-ADD CONSTRAINT [FK_PlayerPlay]
-    FOREIGN KEY ([PlayerId])
-    REFERENCES [dbo].[PlayerSet]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_PlayerPlay'
-CREATE INDEX [IX_FK_PlayerPlay]
-ON [dbo].[PlaySet]
-    ([PlayerId]);
-GO
-
--- Creating foreign key on [PlayId] in table 'CoordsSet'
+-- Creating foreign key on [Game_Id] in table 'CoordsSet'
 ALTER TABLE [dbo].[CoordsSet]
-ADD CONSTRAINT [FK_PlayCoords]
-    FOREIGN KEY ([PlayId])
-    REFERENCES [dbo].[PlaySet]
+ADD CONSTRAINT [FK_GameCoords]
+    FOREIGN KEY ([Game_Id])
+    REFERENCES [dbo].[GameSet]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
--- Creating non-clustered index for FOREIGN KEY 'FK_PlayCoords'
-CREATE INDEX [IX_FK_PlayCoords]
+-- Creating non-clustered index for FOREIGN KEY 'FK_GameCoords'
+CREATE INDEX [IX_FK_GameCoords]
 ON [dbo].[CoordsSet]
-    ([PlayId]);
+    ([Game_Id]);
 GO
 
 -- --------------------------------------------------

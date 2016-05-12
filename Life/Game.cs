@@ -12,12 +12,12 @@ namespace Life
     using System;
     using System.Collections.Generic;
     
-    public partial class Play
+    public partial class Game
     {
         public int Id { get; set; }
-        public string Toy { get; set; }
-        public int PlayerId { get; set; }
-    
-        public virtual Player Player { get; set; }
+        public int Type { get; set; }
+        public int SizeX { get; set; }
+        public int SizeY { get; set; }
+        public int Iteration { get; set; }
     }
 }

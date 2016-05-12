@@ -17,9 +17,8 @@ namespace Life
         public int Id { get; set; }
         public int CoordX { get; set; }
         public int CoordY { get; set; }
-        public int PlayId { get; set; }
-        public int Generation { get; set; }
+        public int TypeLiving { get; set; }
     
-        public virtual Play Play { get; set; }
+        public virtual Game Game { get; set; }
     }
 }

@@ -5,15 +5,16 @@ namespace Life.Models
 {
     class StartConsole
     {
-        public string Man { get; private set; }
-        public string ManToy { get; private set; }
+        public int Id { get; private set; }
+        public int Type { get; private set; }
         public void Run()
         {
             Console.Clear();
             Console.WriteLine("Список команд:");
             Console.WriteLine("---");
 
-            Console.WriteLine("b : запускает игру");
+            Console.WriteLine("b : запускает новую игру");
+            Console.WriteLine("s : запускает сохранённую игру");
             Console.WriteLine("escape : приостанавливает с сохранением");
             Console.WriteLine("e : закрывает программу");
 
@@ -24,10 +25,13 @@ namespace Life.Models
                 Program.thread.Abort();
             if (s == "b")
             {
-                Console.WriteLine("Введите имя:");
-                Man = Console.ReadLine();
-                Console.WriteLine("Если вы хотите продолжить игру наберите название игры. Если вы хотите начать новую игру наберите название новой игры");
-                ManToy = Console.ReadLine();
+                Console.WriteLine("Введите тип игры:");
+                Type = int.Parse(Console.ReadLine());
+            }
+            if (s == "s")
+            {
+                Console.WriteLine("Введите Id:");
+                Id = int.Parse(Console.ReadLine());
             }
         }
     }

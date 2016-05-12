@@ -4,21 +4,27 @@ using System.Threading;
 using Life.BaseData;
 using User;
 using System.Linq;
+using Life.Gaming;
 
 namespace Life.Initialization
 {
     public class Move
     {
+        public Cell[,] gameField;
+        public Cell[,] gameFieldNext;
         public Thread[] threads = new Thread[2];
         public EventWaitHandle ew;
-        Gamer gamer;
+        Game1 game1;
+        Options options;
+        int iterationNumber;
         public Move()
         {
             StartConsole console = new StartConsole();
             console.Run();
-            End(console.Man, console.ManToy);
+            Console.Clear();
+            End(console.Id);
             threads[1].Start();
-            Begin(console.Man, console.ManToy);
+            Begin(console.Id);
             threads[0].Start();
             ew = new EventWaitHandle(false, EventResetMode.AutoReset);
             ew.WaitOne();
@@ -27,7 +33,7 @@ namespace Life.Initialization
             Console.Clear();
         }
 
-        public void Begin(string Man, string ManToy)
+        public void Begin(int id)
         {
             threads[0] = new Thread(() =>
             {
@@ -35,32 +41,34 @@ namespace Life.Initialization
                 MyConsole myConsole;
                 using (var db = new DataModelContainer())
                 {
-                    if (db.CoordsSet.FirstOrDefault(x => x.Play.Toy == Man && x.Play.Player.Name == ManToy) != null)
+                    Game game;
+                    game = (Game)db.GameSet.Where(x => x.Id == id).FirstOrDefault();
+                    options = new Options();
+                    game1 = new Game1();
+                    if (game != null)
                     {
-                        gamer = new Gamer(Man, ManToy, 10, 10, 3, 2);
-                        recordBase.TakeList(gamer.listAll, gamer.NamePlayer, gamer.NamePlay);
-                        myConsole = new MyConsole(gamer.CoordX, gamer.CoordY);
-                        myConsole.DrawConsole(gamer.cells, 0);
-                        while (gamer.NextGeneration())
-                        {
-                            myConsole.DrawConsole(gamer.cells, (gamer.CoordX + 2) * (gamer.listAll.Count - 1));
-                            Thread.Sleep(500);
-                        }
+                        game1.gameField = recordBase.TakeList(id);
+                        game1.gameProperty = options.gameProperty;
+                        iterationNumber = game.Iteration;
                     }
                     else
                     {
-                        gamer = new Gamer(Man, ManToy, 10, 10, 3, 2);
-                        gamer.Init();
-                        myConsole = new MyConsole(gamer.CoordX, gamer.CoordY);
-                        myConsole.DrawConsole(gamer.cells, 0);
-                        while (gamer.NextGeneration())
-                        {
-                            myConsole.DrawConsole(gamer.cells, (gamer.CoordX + 2) * (gamer.listAll.Count - 1));
-                            Thread.Sleep(500);
-                        }
+                        game1.InitRnd(options.gameProperty);
+                        iterationNumber = 0;
                     }
-                    recordBase.RemoveList(gamer.NamePlayer, gamer.NamePlay);
+                    myConsole = new MyConsole(options.gameProperty.SizeX, options.gameProperty.SizeY);
+                    myConsole.DrawConsole(game1.gameField, 0);
+                    while (game1.Step())
+                    {
+                        myConsole.DrawConsole(game1.gameField, 0);
+                        iterationNumber++;
+                        Thread.Sleep(500);
+                    }
+
+                    recordBase.RemoveList(id);
                     Program.thread.Abort();
+                    if (threads[1] != null)
+                        threads[1].Abort();
                     Program.thread = new Thread(() =>
                     {
                         Move move = new Move();
@@ -71,7 +79,7 @@ namespace Life.Initialization
             });
         }
 
-        public void End(string Man, string ManToy)
+        public void End(int typeGame)
         {
             threads[1] = new Thread(() =>
             {
@@ -82,10 +90,7 @@ namespace Life.Initialization
                 RecordBase recordBase = new RecordBase();
                 using (var db = new DataModelContainer())
                 {
-                    if (db.CoordsSet.FirstOrDefault(x => x.Play.Toy == Man && x.Play.Player.Name == ManToy) != null)
-                    {
-                        recordBase.AddList(gamer.listAll, gamer.NamePlayer, gamer.NamePlay);
-                    };
+                    recordBase.AddList(game1.gameField, typeGame, iterationNumber);
                 }
                 if (threads[0] != null)
                     threads[0].Abort();
